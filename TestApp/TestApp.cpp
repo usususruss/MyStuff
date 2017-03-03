@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-	cout << "";
+	cout << "Why the Cirillic does not display? да сколько можно";
     return 0;
 }
 
