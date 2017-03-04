@@ -15,19 +15,43 @@ void getnum(T & a) { // function which controls input data
 	return;
 }
 
-void matrixoutput(double **&pTemp, int n) {
-	for (int k = 0; k < n; k++) {
-		for (int y = 0; y < n; y++) cout << pTemp[k][y] << "\t";
+void matrixoutput(double **&pTemp, int n) { //output matrix
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) cout << pTemp[i][j] << "\t";
 		cout << endl;
 	}
 	return;
 }
 
+void setA(double **&pA, int n, int &ans) { //the procedure of filling the matrix A
+	if (ans == 1) {
+		cout << "\nEnter the elements of symmetric matrix A:\n";
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++) {
+				cout << "A[" << i << ";" << j << "] = ";
+				getnum(pA[i][j]);
+			}
+	}
+	else {
+		double pAcopy[4][4] = {
+			{ 4, -8, -6, 7},
+			{ -8, 4, -2, 9 },
+			{ -6, -2, -7, -10 },
+			{ 7, 9, -10, -7 } };
+		for (int p = 0; p < n; p++)
+			for (int l = 0; l < n; l++) pA[p][l] = pAcopy[p][l];
+	}
+
+	return;
+}
+
+
+
 int main() {
 
 	setlocale(LC_CTYPE, "rus");
 	cout << "\t\t\tSquare root method\n\n";
-	int n; //matrix dimention
+	int n, ans; //matrix dimention
 
 	do {
 		cout << "Enter the size of the symmetric matrix n = ";
@@ -43,17 +67,21 @@ int main() {
 		}
 	}
 
-	cout << "\nEnter the elements of symmetric matrix A:\n";
-
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < n; j++) {
-			cout << "A[" << i << ";" << j << "] = ";
-			getnum(pM[0][i][j]); //pA[i][j] = getnum();
-		}
+	if (n == 4) {
+		do {
+			cout << "\nSelect an action:\n\t1 - Enter the matrix A from the keyboard\n";
+			cout << "\t2 - Prepared sample of matrix A\n   Answer: ";
+			getnum(ans);
+		} while (!(ans == 1 || ans == 2));
+		setA(pM[0], n, ans);
+	}
+	else { ans = 1; setA(pM[0], n, ans); }
 
 	cout << "\n\n The original matrix A:\n\n";
 	matrixoutput(pM[0], n);
 	
+
+
 
 	for (int d1 = 0; d1 < 4; d1++) {
 		for (int d2 = 0; d2 < n; d2++)
