@@ -3,20 +3,26 @@
 #include <clocale>
 using namespace std;
 
-int getnum() { // function which controls input data
+template < typename T >
+void getnum(T & a) { // function which controls input data
 	bool good = true;
-	int a;
 	do
-	{
-		//cout << " " << ch << "=";
-		cin >> a;
+	{	cin >> a;
 		if (!(good = cin.good())) cout << ("  Retype please.\n");
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	} while (!good);
-	return a;
+	return;
 }
 
+void matrixoutput(double **&pTemp, int n) {
+	for (int k = 0; k < n; k++) {
+		for (int y = 0; y < n; y++) cout << pTemp[k][y] << "\t";
+		cout << endl;
+	}
+
+	return;
+}
 
 int main() {
 
@@ -26,13 +32,13 @@ int main() {
 
 	do {
 		cout << "Enter the size of the symmetric matrix n = ";
-		n = getnum();
+		getnum(n);
 	} while (n <= 0 || n >= 500);
 
 
-	int **pA = new int*[n]; //allocation under n lines
+	double **pA = new double*[n]; //allocation under n lines
 	for (int k = 0; k < n; k++)
-		pA[k] = new int[n];//and n rows
+		pA[k] = new double[n];//and n rows
 
 
 	cout << "\nEnter the elements of symmetric matrix A:\n";
@@ -40,15 +46,12 @@ int main() {
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++) {
 			cout << "A[" << i << ";" << j << "] = ";
-			pA[i][j] = getnum();
+			getnum(pA[i][j]); //pA[i][j] = getnum();
 		}
 
 	cout << "\n\n The original matrix A:\n\n";
-
-	for (int k = 0; k < n; k++) {
-		for (int y = 0; y < n; y++) cout << pA[k][y] << "\t";
-		cout << endl;
-	}
+	matrixoutput(pA, n);
+	
 
 
 	for (int m = 0; m < n; m++)
