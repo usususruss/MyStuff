@@ -3,7 +3,7 @@
 #include <clocale>
 using namespace std;
 
-int getnum() { // function control input data
+int getnum() { // function which controls input data
 	bool good = true;
 	int a;
 	do
@@ -22,16 +22,18 @@ int main() {
 
 	setlocale(LC_CTYPE, "rus");
 	cout << "\t\t\tSquare root method\n\n";
-	int n;
+	int n; //matrix dimention
 
 	do {
 		cout << "Enter the size of the symmetric matrix n = ";
 		n = getnum();
 	} while (n <= 0 || n >= 500);
 
+
 	int **pA = new int*[n]; //allocation under n lines
 	for (int k = 0; k < n; k++)
 		pA[k] = new int[n];//and n rows
+
 
 	cout << "\nEnter the elements of symmetric matrix A:\n";
 
