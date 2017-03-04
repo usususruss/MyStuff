@@ -20,7 +20,6 @@ void matrixoutput(double **&pTemp, int n) {
 		for (int y = 0; y < n; y++) cout << pTemp[k][y] << "\t";
 		cout << endl;
 	}
-
 	return;
 }
 
@@ -35,29 +34,35 @@ int main() {
 		getnum(n);
 	} while (n <= 0 || n >= 500);
 
-
-	double **pA = new double*[n]; //allocation under n lines
-	for (int k = 0; k < n; k++)
-		pA[k] = new double[n];//and n rows
-
+	//creating a three-dimensional array, pM[0] - A matrix, pM[1] - D matrix,
+	double ***pM = new double**[4]; // pM[2] - S matrix, pM[3] - transposed S.
+	for (int q = 0; q < 4; q++) {
+		pM[q] = new double*[n];
+		for (int k = 0; k < n; k++) {
+			pM[q][k] = new double[n];
+		}
+	}
 
 	cout << "\nEnter the elements of symmetric matrix A:\n";
 
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++) {
 			cout << "A[" << i << ";" << j << "] = ";
-			getnum(pA[i][j]); //pA[i][j] = getnum();
+			getnum(pM[0][i][j]); //pA[i][j] = getnum();
 		}
 
 	cout << "\n\n The original matrix A:\n\n";
-	matrixoutput(pA, n);
+	matrixoutput(pM[0], n);
 	
 
+	for (int d1 = 0; d1 < 4; d1++) {
+		for (int d2 = 0; d2 < n; d2++)
+			delete[] pM[d1][d2];
+		delete[] pM[d1];
+	}
+	delete[]pM;
 
-	for (int m = 0; m < n; m++)
-		delete[] pA[m];
-	delete[] pA;
-
+	cout << endl;
 	system("pause");
 	return 0;
 }
