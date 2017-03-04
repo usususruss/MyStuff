@@ -45,7 +45,14 @@ void setA(double **&pA, int n, int &ans) { //the procedure of filling the matrix
 	return;
 }
 
-
+bool check(double **&pA, int n) {
+	bool b = true;
+	for (int i = 0; i < n; i++)
+		for (int j = 1; j+i < n; j++) //(int j = 1; j + i < n; j++)
+			if (pA[i][j+i] != pA[j+i][i]) b = false;
+	if (b == false) cout << "\n\n!!Matrix is NOT symmetric!!\n\n";
+	return b;
+}
 
 int main() {
 
@@ -67,15 +74,19 @@ int main() {
 		}
 	}
 
-	if (n == 4) {
-		do {
-			cout << "\nSelect an action:\n\t1 - Enter the matrix A from the keyboard\n";
-			cout << "\t2 - Prepared sample of matrix A\n   Answer: ";
-			getnum(ans);
-		} while (!(ans == 1 || ans == 2));
-		setA(pM[0], n, ans);
-	}
-	else { ans = 1; setA(pM[0], n, ans); }
+
+	do {
+		if (n == 4) {
+			do {
+				cout << "\nSelect an action:\n\t1 - Enter the matrix A from the keyboard\n";
+				cout << "\t2 - Prepared sample of matrix A\n   Answer: ";
+				getnum(ans);
+			} while (!(ans == 1 || ans == 2));
+			setA(pM[0], n, ans);
+		}
+		else { ans = 1; setA(pM[0], n, ans); }
+	} while (!(check(pM[0],n)));
+
 
 	cout << "\n\n The original matrix A:\n\n";
 	matrixoutput(pM[0], n);
