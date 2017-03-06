@@ -149,7 +149,7 @@ int main() {
 
 	double *b = new double[n]; // allocate memory for the array of responses, vector b
 
-	for (int z = 0; z < n; z++) zeroInit(pM[z],n);
+	for (int z = 0; z < 4; z++) zeroInit(pM[z],n);
 
 	do {
 		if (n == 4) {
