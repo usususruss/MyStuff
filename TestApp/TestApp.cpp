@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <clocale>
+#include "math.h"
 using namespace std;
 
 template < typename T >
@@ -23,6 +24,12 @@ void matrixoutput(double **&pTemp, int n) { //output matrix
 	return;
 }
 
+void zeroInit(double **&pTemp, int n) { //output matrix
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) pTemp[i][j] = 0;
+	return;
+}
+
 void setA(double **&pA, int n, int &ans) { //the procedure of filling the matrix A
 	if (ans == 1) {
 		cout << "\nEnter the elements of symmetric matrix A:\n";
@@ -34,10 +41,10 @@ void setA(double **&pA, int n, int &ans) { //the procedure of filling the matrix
 	}
 	else {
 		double pAcopy[4][4] = {
-			{ 4, -8, -6, 7},
-			{ -8, 4, -2, 9 },
-			{ -6, -2, -7, -10 },
-			{ 7, 9, -10, -7 } };
+			{ 6, -5, -1, -8 },
+			{ -5, 7, -5, 5 },
+			{ -1, -5, 9, -1 },
+			{ -8, 5, -1, 7 } };
 		for (int p = 0; p < n; p++)
 			for (int l = 0; l < n; l++) pA[p][l] = pAcopy[p][l];
 	}
@@ -54,19 +61,44 @@ bool check(double **&pA, int n) {
 	return b;
 }
 
+double sign(double d) {
+	if (d < 0) d = -1;
+	else 
+		if (d > 0) d = 1;
+		else d = 0;
+	return d;
+}
+
+double sum1(double ***&pM, int i) {
+	double s = 0;
+	for (int k = 0; k <= (i - 1); k++) {
+		s = s + pM[2][k][i] * pM[2][k][i] * pM[1][k][k];
+	}
+	return s;
+}
+
+double sum2(double ***&pM, int i, int j) {
+	double s = 0;
+	for (int k = 0; k <= (i - 1); k++) {
+		s = s + pM[2][k][i] * pM[1][k][k] * pM[2][k][j];
+	}
+	return s;
+}
+
 int main() {
 
 	setlocale(LC_CTYPE, "rus");
 	cout << "\t\t\tSquare root method\n\n";
-	int n, ans; //matrix dimention
+	cout.precision(3);
+	int n, ans; // n -matrix dimention
 
 	do {
 		cout << "Enter the size of the symmetric matrix n = ";
 		getnum(n);
 	} while (n <= 0 || n >= 500);
 
-	//creating a three-dimensional array, pM[0] - A matrix, pM[1] - D matrix,
-	double ***pM = new double**[4]; // pM[2] - S matrix, pM[3] - transposed S.
+	//creating a three-dimensional array. 
+	double ***pM = new double**[4]; // pM[0] - A matrix, pM[1] - D matrix,pM[2] - S matrix, pM[3] - transposed S.
 	for (int q = 0; q < 4; q++) {
 		pM[q] = new double*[n];
 		for (int k = 0; k < n; k++) {
@@ -74,6 +106,7 @@ int main() {
 		}
 	}
 
+	for (int z = 0; z < n; z++) zeroInit(pM[z],n);
 
 	do {
 		if (n == 4) {
@@ -87,10 +120,22 @@ int main() {
 		else { ans = 1; setA(pM[0], n, ans); }
 	} while (!(check(pM[0],n)));
 
-
 	cout << "\n\n The original matrix A:\n\n";
 	matrixoutput(pM[0], n);
 	
+	//calculation of matrices D and S
+	for (int i = 0; i < n; i++) {
+		pM[1][i][i] = sign(pM[0][i][i] - sum1(pM,i)); // countig D[i;i]
+		pM[2][i][i] = sqrt(fabs(pM[0][i][i] - sum1(pM, i))); // counting S[i;i]
+		for (int j = i + 1; j < n; j++) {
+			pM[2][i][j] = (pM[0][i][j] - sum2(pM, i, j)) / (pM[1][i][i] * pM[2][i][i]);
+		}
+	}
+
+	cout << "\n\n The original matrix D:\n\n";
+	matrixoutput(pM[1], n);
+	cout << "\n\n The original matrix S:\n\n";
+	matrixoutput(pM[2], n);
 
 
 
