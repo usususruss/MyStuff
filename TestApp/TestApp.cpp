@@ -2,6 +2,8 @@
 #include <iostream>
 #include <clocale>
 #include "math.h"
+#include <cstdlib> // for working srand()
+#include <ctime>
 using namespace std;
 
 template < typename T >
@@ -45,15 +47,22 @@ void setA(double **&pA, int n, int &ans) { //the procedure of filling the matrix
 				getnum(pA[i][j]);
 			}
 	}
-	else {
-		double pAcopy[4][4] = {
-			{ 6, -5, -1, -8 },
-			{ -5, 7, -5, 5 },
-			{ -1, -5, 9, -1 },
-			{ -8, 5, -1, 7 } };
-		for (int p = 0; p < n; p++)
-			for (int l = 0; l < n; l++) pA[p][l] = pAcopy[p][l];
-	}
+	else 
+		if (ans == 2) {
+			for (int i = 0; i < n; i++)
+				for (int j = 1; j + i < n; j++) { pA[i][j + i] = pA[j + i][i] = rand() % 5 + 1; }
+			for (int i = 0; i < n; i++)
+				pA[i][i] = rand() % 5 + 1;
+		}
+		else {
+			double pAcopy[4][4] = {
+						{ 6, -5, -1, -8 },
+						{ -5, 7, -5, 5 },
+						{ -1, -5, 9, -1 },
+						{ -8, 5, -1, 7 } };
+			for (int p = 0; p < n; p++)
+				for (int l = 0; l < n; l++) pA[p][l] = pAcopy[p][l];
+		}
 
 	return;
 }
@@ -66,10 +75,16 @@ void setb(double *&b, int n, int &ans) {
 			getnum(b[i]);
 		}
 	}
-	else {
-		double bcopy[4] = { 158, -100, -20, -146 };
-		for (int l = 0; l < n; l++) b[l] = bcopy[l];
-	}
+	else 
+		if (ans == 2) {
+			for (int i = 0; i < n; i++) {
+				b[i] = rand() % 10 + 1;
+			}
+		}
+		else {
+			double bcopy[4] = { 158, -100, -20, -146 };
+			for (int l = 0; l < n; l++) b[l] = bcopy[l];
+		}
 	return;
 }
 
@@ -151,17 +166,24 @@ int main() {
 
 	for (int z = 0; z < 4; z++) zeroInit(pM[z],n);
 
+	srand(time(0)); // random values each time
 	do {
 		if (n == 4) {
 			do {
 				cout << "\nSelect an action:\n\t1 - Enter the matrix A from the keyboard\n";
-				cout << "\t2 - Prepared sample of matrix A\n   Answer: ";
+				cout << "\t2 - Filling the pseudo-random numbers\n\t3 - Prepared sample of matrix A\n  Answer: ";
+				getnum(ans);
+			} while (!(ans == 1 || ans == 2 || ans == 3));
+		}
+		else {
+			do {
+				cout << "\nSelect an action:\n\t1 - Enter the matrix A from the keyboard\n";
+				cout << "\t2 - Filling the pseudo-random numbers\n  Answer: ";
 				getnum(ans);
 			} while (!(ans == 1 || ans == 2));
-			setA(pM[0], n, ans);
-			setb(b, n, ans);
-		}
-		else { ans = 1; setA(pM[0], n, ans); setb(b, n, ans); }
+			}
+		setA(pM[0], n, ans);
+		setb(b, n, ans);
 	} while (!(check(pM[0],n)));
 
 	cout << "\n\n The original matrix A:\n\n";
