@@ -24,6 +24,12 @@ void matrixoutput(double **&pTemp, int n) { //output matrix
 	return;
 }
 
+void vectoutput(double *&b, int n) {
+	for (int i = 0; i < n; i++)
+		cout << b[i] << endl;
+	return;
+}
+
 void zeroInit(double **&pTemp, int n) { //output matrix
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++) pTemp[i][j] = 0;
@@ -52,10 +58,25 @@ void setA(double **&pA, int n, int &ans) { //the procedure of filling the matrix
 	return;
 }
 
+void setb(double *&b, int n, int &ans) {
+	if (ans == 1) {
+		cout << "\nEnter the elements of vector b:\n";
+		for (int i = 0; i < n; i++) {
+			cout << "b[" << i << "] = ";
+			getnum(b[i]);
+		}
+	}
+	else {
+		double bcopy[4] = { 158, -100, -20, -146 };
+		for (int l = 0; l < n; l++) b[l] = bcopy[l];
+	}
+	return;
+}
+
 bool check(double **&pA, int n) {
 	bool b = true;
 	for (int i = 0; i < n; i++)
-		for (int j = 1; j+i < n; j++) //(int j = 1; j + i < n; j++)
+		for (int j = 1; j + i < n; j++)
 			if (pA[i][j+i] != pA[j+i][i]) b = false;
 	if (b == false) cout << "\n\n!!Matrix is NOT symmetric!!\n\n";
 	return b;
@@ -85,11 +106,17 @@ double sum2(double ***&pM, int i, int j) {
 	return s;
 }
 
+void transp(double **&pRes, double **&pInit, int n) {
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) pRes[i][j] = pInit[j][i];
+	return;
+}
+
 int main() {
 
 	setlocale(LC_CTYPE, "rus");
 	cout << "\t\t\tSquare root method\n\n";
-	cout.precision(3);
+	cout.precision(3); // setting the number of decimal places
 	int n, ans; // n -matrix dimention
 
 	do {
@@ -106,6 +133,8 @@ int main() {
 		}
 	}
 
+	double *b = new double[n]; // allocate memory for the array of responses, vector b
+
 	for (int z = 0; z < n; z++) zeroInit(pM[z],n);
 
 	do {
@@ -116,12 +145,15 @@ int main() {
 				getnum(ans);
 			} while (!(ans == 1 || ans == 2));
 			setA(pM[0], n, ans);
+			setb(b, n, ans);
 		}
-		else { ans = 1; setA(pM[0], n, ans); }
+		else { ans = 1; setA(pM[0], n, ans); setb(b, n, ans); }
 	} while (!(check(pM[0],n)));
 
 	cout << "\n\n The original matrix A:\n\n";
 	matrixoutput(pM[0], n);
+	cout << "\n\n The original vector b:\n\n";
+	vectoutput(b, n);
 	
 	//calculation of matrices D and S
 	for (int i = 0; i < n; i++) {
@@ -132,10 +164,19 @@ int main() {
 		}
 	}
 
+	transp(pM[3],pM[2],n); // filling the transposed matrix S
+
 	cout << "\n\n The original matrix D:\n\n";
 	matrixoutput(pM[1], n);
 	cout << "\n\n The original matrix S:\n\n";
 	matrixoutput(pM[2], n);
+	cout << "\n\n The original matrix ST:\n\n";
+	matrixoutput(pM[3], n);
+
+	double *y = new double[n];
+	double *x = new double[n];
+
+
 
 
 
@@ -145,6 +186,9 @@ int main() {
 		delete[] pM[d1];
 	}
 	delete[]pM;
+	delete[]y;
+	delete[]x;
+	delete[]b;
 
 	cout << endl;
 	system("pause");
