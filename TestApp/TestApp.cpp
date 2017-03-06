@@ -106,6 +106,20 @@ double sum2(double ***&pM, int i, int j) {
 	return s;
 }
 
+double sum3(double **&St, double *y, int i) {
+	double s = 0;
+	for (int k = 0; k <= (i - 1); k++)
+		s = s + y[k] * (St[i][k] / St[i][i]);
+	return s;
+}
+
+double sum4(double **&S, double *x, int i, int n) {
+	double s = 0;
+	for (int k = (n - 1); k >= (i + 1); k--)
+		s = s + x[k] * S[i][k] / S[i][i];
+	return s;
+}
+
 void transp(double **&pRes, double **&pInit, int n) {
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++) pRes[i][j] = pInit[j][i];
@@ -176,10 +190,21 @@ int main() {
 	double *y = new double[n];
 	double *x = new double[n];
 
+	for (int l = 0; l < n; l++) {
+		y[l] = b[l] / pM[3][l][l] - sum3(pM[3], y, l);
+	}
 
+	cout << "\n\nVector y:\n\n";
+	vectoutput(y, n);
 
+	for (int h = (n - 1); h >= 0; h--) {
+		x[h] = pM[1][h][h] * y[h] / pM[2][h][h] - sum4(pM[2], x, h, n);
+	}
 
+	cout << "\n\nSolution is ready! Vector x:\n\n";
+	vectoutput(x, n);
 
+	//erasing all dynamyc memory
 	for (int d1 = 0; d1 < 4; d1++) {
 		for (int d2 = 0; d2 < n; d2++)
 			delete[] pM[d1][d2];
